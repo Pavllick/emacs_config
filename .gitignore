@@ -1,0 +1,24 @@
+# Compiled
+*.elc
+
+# Packaging
+.cask
+
+# Backup files
+*~
+
+# Undo-tree save-files
+*.~undo-tree
+
+elpa
+elpa-27.0
+org-clock-save.el
+network-security.data
+tramp
+recentf
+ido.last
+smex-items
+ac-comphist.dat
+org-init.el
+ede-projects.el
+.DS_Store
