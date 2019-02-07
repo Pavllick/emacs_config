@@ -200,7 +200,7 @@ p
 
   (use-package nlinum
     :ensure t
-    :config (global-nlinum-mode 1))
+    :config (global-nlinum-mode 0))
 
   ;; (global-display-line-numbers-mode)
   ;; (setq linum-format "%d ")
@@ -210,7 +210,9 @@ p
 #+BEGIN_SRC emacs-lisp
 
   (use-package ido
-      :init
+    :ensure t
+    :bind (("C-x b" . ido-switch-buffer))
+    :init
       (defun my-ido-keys ()
           "Add keybindings for ido"
           (define-key ido-completion-map [tab] 'ido-next-match))
@@ -254,23 +256,21 @@ p
 
 * Swiper / Ivy / Counsel
 #+BEGIN_SRC emacs-lisp
-
+  (use-package ivy
+    :ensure t
+    :diminish (ivy-mode)
+    :config
+      (ivy-mode 1)
+      (setq ivy-use-virtual-buffers t)
+      (setq ivy-count-format "%d/%d ")
+      (setq ivy-display-style 'fancy))
+  
   (use-package counsel
     :ensure t
     :bind
       (("M-y" . counsel-yank-pop)
       :map ivy-minibuffer-map
         ("M-y" . ivy-next-line)))
-
-  ;; (use-package ivy
-    ;; :ensure t
-    ;; :diminish (ivy-mode)
-    ;; :bind (("C-x b" . ivy-switch-buffer))
-    ;; :config
-      ;; (ivy-mode 1)
-      ;; (setq ivy-use-virtual-buffers t)
-      ;; (setq ivy-count-format "%d/%d ")
-      ;; (setq ivy-display-style 'fancy))
 
   (use-package swiper
     :ensure t
