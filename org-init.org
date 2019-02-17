@@ -365,6 +365,7 @@ p
 
 #+END_SRC
 * Org mode
+** org init config
 #+BEGIN_SRC emacs-lisp
 
   (use-package org 
@@ -416,6 +417,14 @@ p
 
   (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
   #+END_SRC
+** org code execution config
+#+BEGIN_SRC emacs-lisp
+  (org-babel-do-load-languages
+  'org-babel-load-languages '((C . t)))
+
+  (org-babel-do-load-languages
+  'org-babel-load-languages '((ruby . t)))
+#+END_SRC
 * iBuffer
 #+BEGIN_SRC emacs-lisp
   (global-set-key (kbd "C-x C-b") 'ibuffer)
