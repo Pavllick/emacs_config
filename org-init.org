@@ -367,6 +367,7 @@ p
 * Org mode
 ** org init config
 #+BEGIN_SRC emacs-lisp
+  (local-set-key "\M-\C-g" 'org-plot/gnuplot)
 
   (use-package org 
     :ensure t
@@ -424,6 +425,9 @@ p
 
   (org-babel-do-load-languages
   'org-babel-load-languages '((ruby . t)))
+
+  (org-babel-do-load-languages
+  'org-babel-load-languages '((gnuplot . t)))
 #+END_SRC
 * iBuffer
 #+BEGIN_SRC emacs-lisp
