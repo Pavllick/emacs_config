@@ -1,5 +1,7 @@
 # Compiled
 *.elc
+*.cache
+.cache
 
 # Packaging
 .cask
@@ -9,6 +11,10 @@
 
 # Undo-tree save-files
 *.~undo-tree
+
+# projectiles files
+.projectile
+projectile*
 
 elpa
 elpa-27.0
