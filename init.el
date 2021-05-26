@@ -15,7 +15,7 @@
 	 ["#2d3743" "#ff4242" "#74af68" "#dbdb95" "#34cae2" "#008b8b" "#00ede1" "#e1e1e0"])
  '(custom-enabled-themes '(darktooth))
  '(custom-safe-themes
-	 '("190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "cbe892ce669f001193ccbb3b50a6fa402fe2560b3fe802354d73aeb0710a1c63" default))
+	 '("d2e0c53dbc47b35815315fae5f352afd2c56fa8e69752090990563200daae434" "190a9882bef28d7e944aa610aa68fe1ee34ecea6127239178c7ac848754992df" "bcc6775934c9adf5f3bd1f428326ce0dcd34d743a92df48c128e6438b815b44f" "cbe892ce669f001193ccbb3b50a6fa402fe2560b3fe802354d73aeb0710a1c63" default))
  '(ecb-options-version "2.50")
  '(ecb-source-path '(("/" "/")))
  '(fci-rule-color "#5E5E5E")
@@ -35,7 +35,7 @@
  '(org-startup-folded 'overview)
  '(org-startup-indented t)
  '(package-selected-packages
-	 '(ido projectile company-quickhelp omnisharp csharp-mode ob-elixir alchemist elixir-mode gnuplot ivy git-timemachine git-gutter magit company-c-headers nlinum ace-window htmlize noflet seq org-bullets org-pomodoro writeroom-mode org-cliplink grab-mac-link fullframe counsel swiper which-key try auto-complete-config bundler rvm ecb visual-regexp-steroids visual-regexp linum+ spaceline-config quick-peek flycheck-inline company ido-complete-space-or-hyphen ido-ubiquitous use-package all-the-icons neotree spaceline smex hc-zenburn-theme zenburn-theme darktooth-theme flycheck yasnippet-snippets yasnippet-classic-snippets iedit auto-complete-c-headers auto-compile))
+	 '(yaml-mode treemacs-all-the-icons treemacs-magit treemacs-icons-dired treemacs-projectile treemacs web-mode lsp-treemacs lsp-ivy lsp-ui flycheck-irony lsp-mode typescript-mode yasnippet ido projectile company-quickhelp omnisharp csharp-mode ob-elixir alchemist elixir-mode gnuplot ivy git-timemachine git-gutter magit company-c-headers nlinum ace-window htmlize noflet seq org-bullets org-pomodoro writeroom-mode org-cliplink grab-mac-link fullframe counsel swiper which-key try auto-complete-config bundler rvm ecb visual-regexp-steroids visual-regexp linum+ spaceline-config quick-peek flycheck-inline company ido-complete-space-or-hyphen ido-ubiquitous use-package all-the-icons neotree spaceline smex hc-zenburn-theme zenburn-theme darktooth-theme flycheck yasnippet-snippets yasnippet-classic-snippets iedit auto-complete-c-headers auto-compile))
  '(pos-tip-background-color "#36473A")
  '(pos-tip-foreground-color "#FFFFC8")
  '(ps-font-size '(7 . 8.5))

@@ -6,13 +6,22 @@
 
   (add-to-list 'load-path "~/.emacs.d/lisp")
   (load "gud.el")
+
 #+END_SRC
 
+* Keybindings remap
+#+BEGIN_SRC emacs-lisp
+
+  (setq mac-command-modifier 'meta)
+  (global-set-key (kbd "M-o") 'other-window)
+  (global-set-key [remap dabbrev-expand] 'hippie-expand)
+
+#+END_SRC
 * Essential interface settings
 #+BEGIN_SRC emacs-lisp
 
   (server-start)
-  (menu-bar-mode t)
+  (menu-bar-mode -1)
   (tool-bar-mode -1)
   ;;(scroll-bar-mode -1)
   (if (display-graphic-p)
@@ -38,27 +47,33 @@
 
   (global-hl-line-mode t) ; Highlights the current cursor line
 
-  (company-quickhelp-mode) ; Company quick help while idling on a completion candidate
+  (set-face-attribute 'default nil :height 100)
+
+  ;; Theme
+  (use-package darktooth-theme
+    :ensure t
+    :config
+    (load-theme 'darktooth t))
+
 #+END_SRC
 
+* Modeline
+#+BEGIN_SRC emacs-lisp
+
+  ;; Replace modeline
+  (use-package spaceline-config
+    :ensure spaceline
+    :pin melpa-stable
+    :config
+    (spaceline-emacs-theme))
+
+#+END_SRC
 * Open files in same emacs frame
 #+BEGIN_SRC emacs-lisp
 
   ;; Open GUI emacs from terminal in same frame
   (setq ns-pop-up-frames nil)
   ;; (x-focus-frame nil)
-
-  ;; (require 'package)
-  ;; (let* ((no-ssl (and (memq system-type '(windows-nt ms-dos))
-                      ;; (not (gnutls-available-p))))
-         ;; (proto (if no-ssl "http" "https")))
-    ;; Comment/uncomment these two lines to enable/disable MELPA and MELPA Stable as desired
-    ;; (add-to-list 'package-archives (cons "melpa" (concat proto "://melpa.org/packages/")) t)
-    ;;(add-to-list 'package-archives (cons "melpa-stable" (concat proto "://stable.melpa.org/packages/")) t)
-    ;; (when (< emacs-major-version 24)
-      ;; For important compatibility libraries like cl-lib
-      ;; (add-to-list 'package-archives '("gnu" . (concat proto "://elpa.gnu.org/packages/")))))
-  ;; (package-initialize)
 
 #+END_SRC
 
@@ -82,6 +97,7 @@
                                file
                                (file-name-sans-extension file)
                                ))))))
+
 #+END_SRC
 
 * Try
@@ -89,8 +105,9 @@
 
   (use-package try
     :ensure t)
+
 #+END_SRC
-p
+
 * Which key
 #+BEGIN_SRC emacs-lisp
 
@@ -98,12 +115,17 @@ p
     :ensure t 
     :config
     (which-key-mode))
+
 #+END_SRC
 
 * Setup iedit, edit all occurrences of choosen word
 #+BEGIN_SRC emacs-lisp
 
-  (define-key global-map (kbd "C-c ;") 'iedit-mode)
+  (use-package iedit
+    :ensure t
+    :config
+    (define-key global-map (kbd "C-c ;") 'iedit-mode))
+
 #+END_SRC
 
 * Auto complete
@@ -144,16 +166,16 @@ p
     (setq company-idle-delay 0.4)
     (setq company-minimum-prefix-length 1)
     (setq company-selection-wrap-around t)
-    (define-key company-active-map [tab] 'company-select-next)
+    (define-key company-active-map [tab] 'company-select-next))
 
-    (require 'color)
-    (let ((bg (face-attribute 'default :background)))
-      (custom-set-faces
-      `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
-      `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
-      `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
-      `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
-      `(company-tooltip-common ((t (:inherit font-lock-constant-face)))))))
+;;    (require 'color)
+;;    (let ((bg (face-attribute 'default :background)))
+;;      (custom-set-faces
+;;        `(company-tooltip ((t (:inherit default :background ,(color-lighten-name bg 2)))))
+;;        `(company-scrollbar-bg ((t (:background ,(color-lighten-name bg 10)))))
+;;        `(company-scrollbar-fg ((t (:background ,(color-lighten-name bg 5)))))
+;;        `(company-tooltip-selection ((t (:inherit font-lock-function-name-face))))
+;;        `(company-tooltip-common ((t (:inherit font-lock-constant-face))))))
 
     ;; company-c-headers
     (use-package company-c-headers
@@ -184,18 +206,20 @@ p
 * Flycheck
 #+BEGIN_SRC emacs-lisp
 
-  ;; Setup Flycheck
-  (add-hook 'c++-mode-hook 'flycheck-mode)
-  (add-hook 'c-mode-hook 'flycheck-mode)
-  (eval-after-load 'flycheck
-    '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-  (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
-  (defun my-select-g++check-for-checker ()
-    "Select g++-check for flycheck's checker."
-    (flycheck-select-checker 'c/c++-gcc))
+  (use-package flycheck-irony
+    :ensure t
+    :config
+    (add-hook 'c++-mode-hook 'flycheck-mode)
+    (add-hook 'c-mode-hook 'flycheck-mode)
+    (eval-after-load 'flycheck
+      '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+    (add-hook 'c++-mode-hook (lambda () (setq flycheck-gcc-language-standard "c++11")))
+    (defun my-select-g++check-for-checker ()
+      "Select g++-check for flycheck's checker."
+      (flycheck-select-checker 'c/c++-gcc))
 
-  (add-hook 'c-mode-hook #'my-select-g++check-for-checker)
-  (add-hook 'c++-mode-hook #'my-select-g++check-for-checker)
+    (add-hook 'c-mode-hook #'my-select-g++check-for-checker)
+    (add-hook 'c++-mode-hook #'my-select-g++check-for-checker))
 
   ;; Flycheck inline mode
   (use-package flycheck-inline
@@ -204,17 +228,19 @@ p
     (flycheck-inline-mode))
   (use-package quick-peek
     :ensure t)
+
 #+END_SRC
 
 * Line numbers
 #+BEGIN_SRC emacs-lisp
 
-  (use-package nlinum
-    :ensure t
-    :config (global-nlinum-mode 0))
+  ;; (use-package nlinum
+  ;;   :ensure t
+  ;;   :config (global-nlinum-mode 0))
 
-  ;; (global-display-line-numbers-mode)
+  (global-display-line-numbers-mode)
   ;; (setq linum-format "%d ")
+
 #+END_SRC
 
 * IDO
@@ -223,18 +249,20 @@ p
   (use-package ido
     :bind (("C-x b" . ido-switch-buffer))
     :init
-      (defun my-ido-keys ()
-          "Add keybindings for ido"
-          (define-key ido-completion-map [tab] 'ido-next-match))
-      (add-hook 'ido-setup-hook #'my-ido-keys)
-      :config
-      (setq ido-enable-flex-matching t)
-      (setq ido-everywhere t)
-      (ido-mode 1))
-  (use-package ido-complete-space-or-hyphen)
+    (defun my-ido-keys ()
+      "Add keybindings for ido"
+      (define-key ido-completion-map [tab] 'ido-next-match))
+    (add-hook 'ido-setup-hook #'my-ido-keys)
+    :config
+    (setq ido-enable-flex-matching t)
+    (setq ido-everywhere t)
+    (ido-mode 1))
+  ;;  (use-package ido-complete-space-or-hyphen)
+
 #+END_SRC
 
-* Modeline, regexp and autocompletion
+* regexp / autocompletion
+
 #+BEGIN_SRC emacs-lisp
 
   ;; Setup smex, M-x auto completion
@@ -265,10 +293,12 @@ p
     :pin melpa-stable
     :config
     (spaceline-emacs-theme))
+
 #+END_SRC
 
 * Swiper / Ivy / Counsel
 #+BEGIN_SRC emacs-lisp
+
   (use-package ivy
     :ensure t
     :diminish (ivy-mode)
@@ -305,77 +335,78 @@ p
 * Side bar
 #+BEGIN_SRC emacs-lisp
 
-  ;; ==== Side bar file managers ==== ;;
-  ;; Add file tree
-  (use-package neotree
+  (use-package treemacs-all-the-icons
+    :ensure t)
+
+  (use-package treemacs
     :ensure t
+    :init
+    (with-eval-after-load 'winum
+      (define-key winum-keymap (kbd "M-0") #'treemacs-select-window))
+    :bind
+    (:map global-map
+          ("M-0"       . treemacs-select-window)
+          ("C-x t 1"   . treemacs-delete-other-windows)
+          ("C-;"       . treemacs)
+          ("C-x t B"   . treemacs-bookmark)
+          ("C-x t C-t" . treemacs-find-file)
+          ("C-x t M-t" . treemacs-find-tag))
     :config
-    (global-set-key (kbd "C-;") 'neotree-toggle))
-  ;; File tree icons style
-  (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+    (add-hook 'treemacs-mode-hook (lambda() (display-line-numbers-mode -1)))
+    ;; (add-hook 'treemacs-mode-hook (lambda() (set-face-attribute 'default nil :font "Menlo")))
+    (treemacs-resize-icons 22)
+    (treemacs-follow-mode t)
+    (treemacs-filewatch-mode t)
+    (treemacs-fringe-indicator-mode 'always)
 
-  ;; http://www.emacswiki.org/emacs/SrSpeedbar
-  ;; (require 'sr-speedbar)
-  ;; (global-set-key (kbd "<f12>") 'sr-speedbar-toggle)
-  ;; (setq speedbar-show-unknown-files t) ; show all files
-  ;; (setq speedbar-use-images nil) ; use text for buttons
-  ;; (setq sr-speedbar-right-side nil) ; put on left side
-  ;; ==== Side bar file managers ==== ;;
-#+END_SRC
+    (dolist (face '(treemacs-root-face
+                    treemacs-git-unmodified-face
+                    treemacs-git-modified-face
+                    treemacs-git-renamed-face
+                    treemacs-git-ignored-face
+                    treemacs-git-untracked-face
+                    treemacs-git-added-face
+                    treemacs-git-conflict-face
+                    treemacs-directory-face
+                    treemacs-directory-collapsed-face
+                    treemacs-file-face
+                    treemacs-tags-face))
+      (set-face-attribute face nil :family "Helvetica" :height 90))
 
-* Buffer Selection
-#+BEGIN_SRC emacs-lisp
+    (treemacs-load-theme "all-the-icons"))
 
-  ;; (require 'bs)
-  ;; (setq bs-configurations
-  ;; '(("files" "^\\*scratch\\*" nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)))
-  ;; (global-set-key (kbd "<f2>") 'bs-show))
-  (use-package bs
+  (use-package treemacs-projectile
+    :after (treemacs projectile)
+    :ensure t)
+
+  (use-package treemacs-icons-dired
+    :after (treemacs dired)
     :ensure t
-    :bind ("<f2>" . bs-show)
-    :config
-    (setq bs-configurations
-          '(("files" "^\\*scratch\\*" nil nil bs-visits-non-file bs-sort-buffer-interns-are-last))))
+    :config (treemacs-icons-dired-mode))
+
+  (use-package treemacs-magit
+    :after (treemacs magit)
+    :ensure t)
+
+  ;; (use-package neotree
+  ;;   :ensure t
+  ;;   :config
+  ;;   (global-set-key (kbd "C-;") 'neotree-toggle))
+  ;; ;; File tree icons style
+  ;; (setq neo-theme (if (display-graphic-p) 'icons 'arrow))
+
 #+END_SRC
 
 * Buffer resize
 #+BEGIN_SRC emacs-lisp
-  
+
   (defun halve-other-window-height ()
     "Expand current window to use quarter of the other window's lines."
     (interactive)
     (enlarge-window (/ (window-height (next-window)) 4)))
 
   (global-set-key (kbd "C-c v") 'halve-other-window-height)
-#+END_SRC
 
-* Ruby packages
-
-#+BEGIN_SRC emacs-lisp
-
-  ;; (use-package rvm
-    ;; :config (rvm-use-default))
-
-  (use-package bundler
-    :ensure t)
-#+END_SRC
-
-* Elixir packages
-#+BEGIN_SRC emacs-lisp
-
-  (use-package elixir-mode
-     :ensure t)
-     
-  (use-package alchemist
-     :ensure t)
-     
-#+END_SRC
-* Keybindings remap
-#+BEGIN_SRC emacs-lisp
-
-  (setq mac-command-modifier 'meta)
-  (global-set-key (kbd "M-o") 'other-window)
-  (global-set-key [remap dabbrev-expand] 'hippie-expand)
 #+END_SRC
 
 * Tramp for remote file editing
@@ -394,6 +425,7 @@ p
 * Org mode
 ** org init config
 #+BEGIN_SRC emacs-lisp
+
   (local-set-key "\M-\C-g" 'org-plot/gnuplot)
 
   (use-package org 
@@ -444,9 +476,11 @@ p
   (use-package htmlize :ensure t)
 
   (setq org-ditaa-jar-path "/usr/share/ditaa/ditaa.jar")
+
   #+END_SRC
 ** org code execution config
 #+BEGIN_SRC emacs-lisp
+
   (use-package ob-elixir
     :ensure t)
 
@@ -459,8 +493,19 @@ p
     (org . t)))
 
 #+END_SRC
+* YAML mode
+#+BEGIN_SRC emacs-lisp
+
+  (use-package yaml-mode
+    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.yml\\'" . yaml-mode)))
+
+#+END_SRC
+    
 * iBuffer
 #+BEGIN_SRC emacs-lisp
+
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (setq ibuffer-saved-filter-groups
         (quote (("default"
@@ -490,7 +535,7 @@ p
               (ibuffer-switch-to-saved-filter-groups "default")))
 
   ;; don't show these
-                                          ;(add-to-list 'ibuffer-never-show-predicates "zowie")
+  ;; (add-to-list 'ibuffer-never-show-predicates "zowie")
   ;; Don't show filter groups if there are no buffers in that group
   (setq ibuffer-show-empty-filter-groups nil)
 
@@ -498,24 +543,10 @@ p
   (setq ibuffer-expert t)
 
 #+END_SRC
-* Ace windows for easy window switching
 
-  #+BEGIN_SRC emacs-lisp
-
-    (use-package ace-window
-    :ensure t
-    :init
-    (progn
-    (setq aw-scope 'frame)
-    (global-set-key (kbd "C-x O") 'other-frame)
-      (global-set-key [remap other-window] 'ace-window)
-      (custom-set-faces
-       '(aw-leading-char-face
-         ((t (:inherit ace-jump-face-foreground :height 4.0))))) 
-      ))
-  #+END_SRC
 * Magit
 #+BEGIN_SRC emacs-lisp
+
   (use-package magit
     :ensure t
     :init
@@ -532,6 +563,7 @@ p
     :ensure t)
 
 #+END_SRC
+
 * C# Mode
 
 #+BEGIN_SRC emacs-lisp
@@ -554,62 +586,114 @@ p
     (setq tab-width 4)
     (setq evil-shift-width 4))
 
-  (use-package omnisharp
-      :ensure t
-      :after company
-      :config
+;;  (use-package omnisharp
+;;      :ensure t
+;;      :after company
+;;      :config
 
-      (add-hook 'csharp-mode-hook 'omnisharp-mode)
-      (add-hook 'csharp-mode-hook 'c-set-style "k&r")
-      (eval-after-load
-      'company
-      '(add-to-list 'company-backends 'company-omnisharp))
+;;      (add-hook 'csharp-mode-hook 'omnisharp-mode)
+;;      (add-hook 'csharp-mode-hook 'c-set-style "k&r")
+;;      (eval-after-load
+;;      'company
+;;      '(add-to-list 'company-backends 'company-omnisharp))
 
-      (add-hook 'csharp-mode-hook #'company-mode)
-      (add-hook 'csharp-mode-hook #'flycheck-mode))
+;;      (add-hook 'csharp-mode-hook #'company-mode)
+;;      (add-hook 'csharp-mode-hook #'flycheck-mode))
       ;; (add-hook 'csharp-mode-hook 'my-csharp-mode-setup t))
 
 #+END_SRC
-* C Code Format
+* Web Mode
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package magit
-  ;;   :ensure t
-  ;;   :init
-  ;;   (progn
-  ;;     (bind-key "C-x g" 'magit-status)
-  ;;     ))
 
-  ;; (use-package git-gutter
-  ;;   :ensure t
-  ;;   :init
-  ;;   (global-git-gutter-mode +1))
-
-  ;; (use-package git-timemachine
-  ;;   :ensure t)
-(c-add-style
-  "csharp"
-  '("k&r"))
-
-(setq c-default-style '((csharp-mode  . "k&r")))
-
-#+END_SRC
-* Pojectile
-#+BEGIN_SRC emacs-lisp
-(use-package projectile
+  (use-package web-mode
     :ensure t
     :config
-    
-    (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+    (setq web-mode-markup-indent-offset 2)
+    (setq web-mode-code-indent-offset 2)
+    (setq web-mode-css-indent-offset 2)
+    :mode (("\\.js\\'" . web-mode)
+           ("\\.jsx\\'" .  web-mode)
+           ("\\.ts\\'" . web-mode)
+           ("\\.tsx\\'" . web-mode)
+           ("\\.html\\'" . web-mode))
+    :commands web-mode)
 
-    (projectile-mode)
+  #+END_SRC
+
+* TypeScript Mode
+#+BEGIN_SRC emacs-lisp
+
+  (use-package typescript-mode
+    :ensure t
+    :config
+    (add-to-list 'auto-mode-alist '("\\.tsx?\\'" . typescript-mode))
+    (setq typescript-indent-level   2
+      typescript-expr-indent-offset 2
+      ))
+
+#+END_SRC
+
+* C Code Format
+#+BEGIN_SRC emacs-lisp
+
+  (c-add-style
+    "csharp"
+    '("k&r"))
+
+  (setq c-default-style '((csharp-mode  . "k&r")))
+
+#+END_SRC
+
+* Pojectile
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package projectile
+      :ensure t
+      :config
     
-    (setq projectile-enable-caching t)
-    (setq projectile-indexing-method 'alien)
-    (setq projectile-globally-ignored-file-suffixes
-      '("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar"))
-    (setq projectile-globally-ignored-directories
-      '(".git" "node_modules" "__pycache__" ".vs"))
-    (setq projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
-)
+      (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map)
+
+      (projectile-mode)
+    
+      (setq projectile-enable-caching t)
+      (setq projectile-indexing-method 'alien)
+      (setq projectile-globally-ignored-file-suffixes
+        '("#" "~" ".swp" ".o" ".so" ".exe" ".dll" ".elc" ".pyc" ".jar"))
+      (setq projectile-globally-ignored-directories
+        '(".git" "node_modules" "__pycache__" ".vs"))
+      (setq projectile-globally-ignored-files '("TAGS" "tags" ".DS_Store"))
+  )
+
+#+END_SRC
+
+* LSP Mode
+
+#+BEGIN_SRC emacs-lisp
+
+  (use-package lsp-mode
+    :ensure t
+    :init
+    ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+    (setq lsp-keymap-prefix "C-c l")
+    :hook ((typescript-mode . lsp)
+           (lsp-mode . lsp-enable-which-key-integration)
+           (web-mode . lsp-deferred))
+    :commands lsp)
+
+  (use-package lsp-ui
+    :ensure t
+    :commands lsp-ui-mode)
+
+  (use-package lsp-ivy
+    :ensure t
+    :commands lsp-ivy-workspace-symbol)
+
+  (setq read-process-output-max (* 1024 1024)) ;; 1mb
+  (setq gc-cons-threshold 100000000)
+
+  (use-package lsp-treemacs
+    :ensure t
+    :commands lsp-treemacs-errors-list)
 
 #+END_SRC
