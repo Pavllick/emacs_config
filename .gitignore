@@ -1,30 +1,8 @@
-# Compiled
-*.elc
-*.cache
-.cache
+# Blacklist files/folders in same directory as the .gitignore file
+/*
 
-# Packaging
-.cask
+# Whitelist some files
+!.gitignore
 
-# Backup files
-*~
-
-# Undo-tree save-files
-*.~undo-tree
-
-# projectiles files
-.projectile
-projectile*
-
-elpa
-elpa-27.0
-org-clock-save.el
-network-security.data
-tramp
-recentf
-ido.last
-smex-items
-ac-comphist.dat
-org-init.el
-ede-projects.el
-.DS_Store
+!early-init.el
+!org-init.org
